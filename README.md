@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-**Prokoders E-Commerce** is a modern, full-featured online store built with:
+**Prokoders E-Commerce** is a online store built with:
 
 - ASP.NET Core 6.0 MVC
 - Entity Framework Core
@@ -14,7 +14,7 @@ It supports:
 - Product management
 - Shopping cart
 - Real-time updates using SignalR
-- A complete checkout system
+- Checkout 
 
 ---
 
