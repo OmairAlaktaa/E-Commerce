@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ProkodersECommerce.Models.Product>
+@{
+    ViewData["Title"] = "Product Catalog";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-controller="Product" asp-action="Index" method="get">
+    <input type="text" name="searchTerm" value="@ViewBag.SearchTerm" placeholder="Search products..." />
+    <select name="sortBy">
+        <option value="" selected="@(string.IsNullOrEmpty(ViewBag.SortBy))">Sort by Name (A-Z)</option>
+        <option value="name_desc" selected="@(ViewBag.SortBy == "name_desc")">Sort by Name (Z-A)</option>
+        <option value="price_asc" selected="@(ViewBag.SortBy == "price_asc")">Sort by Price (Low to High)</option>
+        <option value="price_desc" selected="@(ViewBag.SortBy == "price_desc")">Sort by Price (High to Low)</option>
+    </select>
+    <button type="submit">Search</button>
+</form>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>$@item.Price.ToString("F2")</td>
+                <td>
+                    <a asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId">View</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (ViewBag.TotalPages > 1)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                    <a class="page-link"
+                       asp-controller="Product"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-searchTerm="@ViewBag.SearchTerm"
+                       asp-route-sortBy="@ViewBag.SortBy">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

@@ -1,0 +1,107 @@
+﻿@model ProkodersECommerce.Models.Cart
+@{
+    ViewData["Title"] = "Your Shopping Cart";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Items == null || !Model.Items.Any())
+{
+    <div class="alert alert-info">
+        Your cart is empty.
+    </div>
+}
+else
+{
+    <form method="post" asp-controller="Cart" asp-action="Update">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr data-item-id="@item.Id">
+                        <td>@item.Product.Name</td>
+                        <td class="unit-price" data-price="@item.Product.Price">
+                            $@item.Product.Price.ToString("F2")
+                        </td>
+                        <td>
+                            <input type="number"
+                                   name="Quantities[@item.Id]"
+                                   min="1"
+                                   value="@item.Quantity"
+                                   class="form-control quantity-input"
+                                   data-item-id="@item.Id" />
+                        </td>
+                        <td class="item-total">
+                            $@(item.Product.Price * item.Quantity).ToString("F2")
+                        </td>
+                        <td>
+                            <button type="submit"
+                                    name="removeItemId"
+                                    value="@item.Id"
+                                    class="btn btn-danger btn-sm">
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h4>Grand Total: <span id="grand-total" class="fw-bold"></span></h4>
+
+            <div>
+                <a asp-controller="Checkout" asp-action="Index" class="btn btn-success">
+                    Proceed to Checkout
+                </a>
+            </div>
+        </div>
+    </form>
+}
+
+@section Scripts {
+    <script>
+        function calculateTotals() {
+            let grandTotal = 0;
+            document.querySelectorAll("tr[data-item-id]").forEach(row => {
+                const price = parseFloat(row.querySelector(".unit-price").dataset.price);
+                const qtyInput = row.querySelector(".quantity-input");
+                const quantity = parseInt(qtyInput.value) || 0;
+                const itemTotal = price * quantity;
+                row.querySelector(".item-total").innerText = "$" + itemTotal.toFixed(2);
+                grandTotal += itemTotal;
+            });
+            document.getElementById("grand-total").innerText = "$" + grandTotal.toFixed(2);
+        }
+
+        calculateTotals();
+
+        document.querySelectorAll(".quantity-input").forEach(input => {
+            input.addEventListener("input", calculateTotals);
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/carthub")
+            .build();
+
+        connection.on("ReceiveCartUpdate", function () {
+            console.log("Cart was updated!");
+            location.reload();
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+    </script>
+
+}

@@ -1,0 +1,6 @@
+**/bin/
+**/obj/
+*.md
+*.log
+.vs
+Dockerfile

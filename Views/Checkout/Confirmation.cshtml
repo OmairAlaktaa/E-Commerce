@@ -1,0 +1,60 @@
+﻿@model ProkodersECommerce.Models.Order
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h2 class="text-success">Thank you for your order!</h2>
+        <p class="lead">Your order has been placed successfully.</p>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4 class="card-title">Order Summary</h4>
+            <p><strong>Order ID:</strong> @Model.Id</p>
+            <p><strong>Status:</strong> @Model.Status</p>
+            <p><strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")</p>
+            <p><strong>Full Name:</strong> @Model.FullName</p>
+            <p><strong>Shipping Address:</strong> @Model.Address</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>Phone:</strong> @Model.PhoneNumber</p>
+            <p><strong>Order Date:</strong> @Model.CreatedAt.ToString("f")</p>
+        </div>
+    </div>
+
+    @if (Model.Items != null && Model.Items.Any())
+    {
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Items Ordered</h5>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.Product.Name</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Product.Price.ToString("C")</td>
+                                <td>@((item.Product.Price * item.Quantity).ToString("C"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Index", "Product")" class="btn btn-primary">Continue Shopping</a>
+    </div>
+</div>
