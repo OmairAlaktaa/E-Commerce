@@ -128,7 +128,6 @@ Update the connection string:
 ### Architectural Patterns
 
 - **Repository Pattern**: Abstracts data access logic.
-- **Factory Pattern**: Centralizes complex object creation (e.g., for Orders).
 - **Singleton Pattern**: Used for shared services like `EmailService`.
 - **Observer Pattern**: Implemented using SignalR for real-time cart updates.
 
